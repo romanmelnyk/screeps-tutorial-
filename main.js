@@ -1,24 +1,18 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var towers = require ('towers');
 
 module.exports.loop = function () {
-
-    var tower = Game.getObjectById('22c8e67ca6bbc4b112f2a54d');
-    if(tower) {
-        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
-        });
-        if(closestDamagedStructure) {
-            tower.repair(closestDamagedStructure);
-        }
-
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-        if(closestHostile) {
-            tower.attack(closestHostile);
-        }
+	
+	//for towers
+    var tower = Game.spawns.Spawn1.room.find(FIND_STRUCTURES,{
+            filter: (structure) => structure.structureType == STRUCTURE_TOWER
+    });
+    for(var i = 0 ; i < tower.length ; i++){
+        towers.run(tower[i]);
     }
-
+    //for creeps   
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
         if(creep.memory.role == 'harvester') {
