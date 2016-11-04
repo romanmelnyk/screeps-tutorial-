@@ -3,8 +3,16 @@ var towers = {
     run: function(tower) {
         
         //main task(attacking enemies)
-        var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS)
         
+        var healer = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
+            filter: (enemy) => enemy.getActiveBodyparts(HEAL) > 10 
+        });
+        if(!healer){
+            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        }
+        else{
+            var closestHostile = tower.pos.findInRange(FIND_HOSTILE_CREEPS,20);
+        }
         if(closestHostile) {
             tower.attack(closestHostile);
         }
