@@ -3,7 +3,7 @@ var roleBuilder = {
 
     run: function(creep) {
         var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+        var targets = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
 	    var repairWalls = creep.room.find(FIND_STRUCTURES, {
 				filter: (structure) => structure.hits < structure.hitsMax // && structure.structureType == STRUCTURE_WALL
 			});
@@ -14,9 +14,9 @@ var roleBuilder = {
                                 structure.structureType == STRUCTURE_TOWER) && structure.energy < structure.energyCapacity;
                     }
             });
-        if((builders.length > 2 && targets.length == 0 && repairWalls.length == 0) || Game.spawns['Spawn1'].energyCapacity > Game.spawns['Spawn1'].energy * 2) {
-            creep.memory.role = 'harvester';
-        }
+   //     if((builders.length > 2 && targets.length == 0 && repairWalls.length == 0) || Game.spawns['Spawn1'].energyCapacity > Game.spawns['Spawn1'].energy * 2) {
+   //         creep.memory.role = 'harvester';
+   //     }
         if(creep.ticksToLive < 30){
             Game.spawns['Spawn1'].createCreep([WORK,CARRY,MOVE], undefined, {role: 'builder'});
         }
@@ -33,9 +33,9 @@ var roleBuilder = {
 		//creep builds
 	    if(creep.memory.building) {
 			//creep builds 
-            if(targets.length > 0) {
-                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0]);
+            if(targets) {
+                if(creep.build(targets) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(targets);
                 }
             }
 			//creep repairs Walls

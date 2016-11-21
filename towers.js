@@ -4,18 +4,35 @@ var towers = {
         
         //main task(attacking enemies)
         
-        var healer = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
+        var healer = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS, {
             filter: (enemy) => enemy.getActiveBodyparts(HEAL) > 10 
         });
-        if(!healer){
-            var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+        var closeEnemy = tower.pos.findInRange(FIND_HOSTILE_CREEPS,15);
+        if(closeEnemy){
+            var closestHostile = tower.pos.findInRange(FIND_HOSTILE_CREEPS,15, {
+                filter: (enemy) => enemy.getActiveBodyparts(HEAL)
+            });
+        }
+        if(closestHostile){
+            tower.attack(closestHostile);
+            var attack = true;
         }
         else{
-            var closestHostile = tower.pos.findInRange(FIND_HOSTILE_CREEPS,20);
+            if(!healer){
+                var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+            }
+            else{
+                var closestHostile = tower.pos.findInRange(FIND_HOSTILE_CREEPS,20);
+            }
+            if(closestHostile) {
+                tower.attack(closestHostile);
+                var attack = true;
+            }
+            else{
+                attack = false;
+            }
         }
-        if(closestHostile) {
-            tower.attack(closestHostile);
-        }
+        
 		
         if(Game.time % 10 == 0){
             
@@ -23,7 +40,7 @@ var towers = {
                 filter: (structure) => structure.structureType == STRUCTURE_ROAD && structure.hits < structure.hitsMax
             });
             
-            if(roadsNeededToRepair.length > 0){
+            if(roadsNeededToRepair.length > 0 && !attack){
                 tower.repair(roadsNeededToRepair[0]);
             }
         }
